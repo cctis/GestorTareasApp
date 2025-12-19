@@ -1,76 +1,84 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { useTasks } from "../hooks/useTasks";
-import { useNavigate } from "react-router-dom";
+
+import {
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Alert,
+} from "@mui/material";
 
 const CreateStatePage = () => {
-    const { createStates, error } = useTasks();
-    const navigate = useNavigate();
+  const { createStates, error } = useTasks();
+  const navigate = useNavigate();
 
-    const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
 
-    const onSubmit = async (data: any) => {
-
-        
-        const dto = {
-            name: data.name,   
-        };
-
-        const res = await createStates(dto);
-        if (res.statusResponse) navigate("/");
+  const onSubmit = async (data: any) => {
+    const dto = {
+      name: data.name,
     };
 
-    return (
-        <Layout>
-            <div
-                className="
-                    max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg
-                    border border-gray-200 animate-fade-in
-                "
+    const res = await createStates(dto);
+    if (res.statusResponse) navigate("/");
+  };
+
+  return (
+    <Layout>
+      <Paper
+        elevation={6}
+        sx={{
+          maxWidth: 420,
+          mx: "auto",
+          p: 4,
+          borderRadius: 3,
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={700}
+          textAlign="center"
+          mb={3}
+        >
+          Crear estado
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {JSON.stringify(error)}
+          </Alert>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={3}>
+            
+            
+            <TextField
+              label="Nombre del estado"
+              placeholder="Ej: Pendiente"
+              fullWidth
+              required
+              {...register("name")}
+            />
+
+          
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
             >
-                <h2 className="text-2xl font-bold mb-6 text-gray-900 text-center">
-                    Crear Estado
-                </h2>
-
-                {error && (
-                    <div className="bg-red-100 text-red-700 border border-red-300 p-3 rounded mb-4">
-                        {JSON.stringify(error)}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
-                  
-                    <div>
-                        <label className="block text-gray-700 font-medium mb-1">
-                            Nombre
-                        </label>
-                        <input
-                            {...register("name")}
-                            className="
-                                w-full p-3 border rounded-xl
-                                focus:outline-none focus:ring-2 focus:ring-blue-500
-                                transition-all
-                                text-gray-800
-                            "
-                            placeholder="Escribe un título..."
-                            required
-                        />
-                    </div>
-
-                    <button
-                        className="
-                            w-full py-3 bg-blue-600 text-white font-semibold
-                            rounded-xl shadow-md hover:bg-blue-700
-                            transition-all text-lg
-                        "
-                    >
-                        Crear Estado
-                    </button>
-                </form>
-            </div>
-        </Layout>
-    );
+              Crear estado
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Layout>
+  );
 };
 
 export default CreateStatePage;
+

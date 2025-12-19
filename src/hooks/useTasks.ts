@@ -7,6 +7,7 @@ import {
   DeleteTask,
   CreateStates,
   GetStates,
+  UpdateState,
   DeleteState 
 } from "../utils/actions";
 
@@ -72,8 +73,14 @@ export const useTasks = () => {
   };
 
    const deleteStateById = async (id: number) => {
-    console.log(id);
       const res = await DeleteState(id); 
+      if (!res.statusResponse) setError(res.error);
+      else await loadStates();
+      return res;
+  };
+
+   const updateState = async (id:number,state: any) => {
+      const res = await UpdateState(id,state);
       if (!res.statusResponse) setError(res.error);
       else await loadStates();
       return res;
@@ -92,6 +99,6 @@ export const useTasks = () => {
       createStates,
       loadStates,
       deleteStateById,
-      
+      updateState
   };
 };

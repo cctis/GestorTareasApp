@@ -62,9 +62,9 @@ export const GetTasks = async (): Promise<ApiResult<any[]>> => {
       id: t.Id,
       title: t.Title,
       description: t.Description,
-      state: t.State?.Name ?? "", 
-      createdAt: t.CreatedAt,
-      updatedAt: t.UpdatedAt
+      state: t.State ?? "", 
+      DueDate: t.DueDate,
+    
     }));
 
   } catch (error: any) {
@@ -106,12 +106,12 @@ export const GetTaskById = async (id: number): Promise<ApiResult<any>> => {
   if (!token) return { statusResponse: false, error: "Token inválido", data: null };
 
   try {
-    const response = await axios.get(`${API_URL}/api/Tasks?id=${id}`, {
+    const response = await axios.get(`${API_URL}/api/Tasks/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     result.data = response.data;
-
+  console.log('*********',result.data);
   } catch (error: any) {
     result.statusResponse = false;
     result.error = error.response?.data || error.message;
@@ -239,6 +239,29 @@ export const DeleteState = async (id: number): Promise<ApiResult<any>> => {
       error.response?.data?.MessageResult ||
       error.message ||
       "Error desconocido";
+  }
+
+  return result;
+};
+
+export const UpdateState = async (id: number, state: any): Promise<ApiResult<any>> => {
+  const result: ApiResult<any> = { statusResponse: true, error: null, data: null };
+
+  const token = await getToken();
+  if (!token) return { statusResponse: false, error: "Token inválido", data: null };
+
+  try {
+    const response = await axios.put(
+      `${API_URL}/api/States/${id}`,
+      state,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    result.data = response.data;
+
+  } catch (error: any) {
+    result.statusResponse = false;
+    result.error = error.response?.data || error.message;
   }
 
   return result;

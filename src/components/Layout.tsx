@@ -1,52 +1,111 @@
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  Paper,
+  Stack,
+  Button,
+  TextField,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+interface LayoutProps {
+  children: React.ReactNode;
+  search?: string;
+  onSearchChange?: (value: string) => void;
+  withTable?: boolean;
+  
+}
+
+
+const Layout = ({
+  children,
+  search = "",
+  onSearchChange,
+   withTable = false,
+}: LayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center px-4 py-6">
-      
-      <div className="w-full max-w-4xl mt-6 mb-12 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-        
-        <header className="px-8 py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200 flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-700">
+    <>
+     
+      <AppBar position="static" color="primary" elevation={4}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Gestión de Tareas
-          </h1>
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-          <Link
-            to="/tasks/new"
-            className="
-              px-5 py-2.5 rounded-xl 
-              bg-gradient-to-r from-blue-600 to-indigo-600 
-              text-white font-semibold shadow-lg 
-              hover:shadow-xl hover:from-blue-700 hover:to-indigo-700
-              active:scale-95 transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50
-            "
+     
+      <Container maxWidth="lg" sx={{ mt: 6 }}>
+        <Paper elevation={6} sx={{ p: 4, borderRadius: 3 }}>
+          
+         
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            justifyContent="space-between"
+            alignItems="center"
+            mb={4}
           >
-            + Nueva Tarea
-          </Link>
-          <br></br>
+           
+            <TextField
+              label="Buscar tarea"
+              variant="outlined"
+              fullWidth
+              value={search}
+              onChange={(e) => onSearchChange?.(e.target.value)}
+            />
 
-              <Link
-            to="/states/new"
-            className="
-              px-5 py-2.5 rounded-xl 
-              bg-gradient-to-r from-blue-600 to-indigo-600 
-              text-white font-semibold shadow-lg 
-              hover:shadow-xl hover:from-blue-700 hover:to-indigo-700
-              active:scale-95 transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50
-            "
-          >
-            + Nuevo Estado
-          </Link>
-        </header>
+            
+            <Stack direction="row" spacing={2}>
+              <Button
+                component={Link}
+                to="/tasks/new"
+                variant="contained"
+              >
+                + Crear Tarea
+              </Button>
 
-        
-        <main className="p-6 md:p-8">
-          {children}
-        </main>
-      </div>
-    </div>
+              <Button
+                component={Link}
+                to="/states/new"
+                variant="outlined"
+              >
+                + Crear Estado
+              </Button>
+            </Stack>
+          </Stack>
+
+         
+          {withTable ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><b>Título</b></TableCell>
+                
+                <TableCell><b>Fecha creación</b></TableCell>
+                <TableCell><b>Estado</b></TableCell>
+                <TableCell align="center"><b>Acciones</b></TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {children}
+            </TableBody>
+          </Table>
+
+            ) : (
+            <>{children}</>
+          )}
+        </Paper>
+      </Container>
+    </>
   );
 };
 
